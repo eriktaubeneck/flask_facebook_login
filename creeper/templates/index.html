@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <div class="row">
+    <div class="twelve columns">
+      <div id="featured">
+        <img src="http://placehold.it/1000x400&text=[big image 1]" />
+        <img src="http://placehold.it/1000x400&text=[big image 2]" />
+        <img src="http://placehold.it/1000x400&text=[big image 3]" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Band (Image Left with Text) -->
+
+  <div class="row">
+    <div class="four columns">
+      <img src="http://placehold.it/400x300&text=[img]" />
+    </div>
+    <div class="eight columns">
+      <h4>This is a content section.</h4>
+      <div class="row">
+        <div class="six columns">
+          <p>Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong. Eiusmod swine spare ribs reprehenderit culpa. Boudin aliqua adipisicing rump corned beef.</p>
+        </div>
+        <div class="six columns">
+          <p>Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon nulla pork belly cupidatat meatloaf cow. Nulla corned beef sunt ball tip, qui bresaola enim jowl. Capicola short ribs minim salami nulla nostrud pastrami.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Third Band (Image Right with Text) -->
+
+  <div class="row">
+    <div class="eight columns">
+      <h4>This is a content section.</h4>
+
+      <p>Bacon ipsum dolor sit amet nulla ham qui sint exercitation eiusmod commodo, chuck duis velit. Aute in reprehenderit, dolore aliqua non est magna in labore pig pork biltong. Eiusmod swine spare ribs reprehenderit culpa. Boudin aliqua adipisicing rump corned beef.</p>
+
+      <p>Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon nulla pork belly cupidatat meatloaf cow. Nulla corned beef sunt ball tip, qui bresaola enim jowl. Capicola short ribs minim salami nulla nostrud pastrami.</p>
+
+    </div>
+    <div class="four columns">
+      <img src="http://placehold.it/400x300&text=[img]" />
+    </div>
+  </div>
+
+
+{% endblock %}
+
+{% block modals %}  
+
+  <div id="login_modal" class="reveal-modal">
+    <h2> Welcome to creeper! </h2>
+    <p>
+      It's never been better to be a fan, but sometimes we could all use a little help navigating 
+      the realm of fandom. At creeper, we're here to help!
+    </p>
+      <a href="#" id="facebook_login" class="button"> Get started. Login with Facebook. </a>
+    </p>
+  </div>
+
+  <div id="user_no_facebook_auth_modal" class="reveal-modal">
+    <h2> Whoops! </h2>
+    <p>
+      It seems that creeper isn't authorized on your Facebook account anymore. We only listen 
+      to your account for relevant fan activity and would never post on your behalf.
+    </p>
+      <a href="#" id="facebook_login" class="button"> Reconnect to Facebook. </a>
+    </p>
+  </div>  
+
+  <div id="user_no_facebook_login_modal" class="reveal-modal">
+    <h2> Whoops! </h2>
+    <p>
+      It seems that you aren't logged into Facebook currently. Creeper works closely with 
+      your Facebook account.
+    </p>
+      <a href="#" id="facebook_login" class="button"> Login to Facebook. </a>
+    </p>
+  </div>
+  
+  <div id="no_user_facebook_modal" class="reveal-modal">
+    <h2> Welcome to creeper! </h2>
+    <p>
+      Logging you in through Facebook. Just a second!
+  </div>
+  
+{% endblock %}  
+
+{% block facebook_js %}
+    <script>
+    $(window).load(function(){
+      $("#featured").orbit();
+    });
+
+      // Additional JS functions here
+      $(function(){
+        $('a#facebook_login').bind('click', function () {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    // connected
+                    console.log('login successful')
+                    get_user()
+                } else {
+                    // cancelled
+                    console.log('login failed ')
+                }
+            });
+            return false;
+          });
+        });
+      
+      function get_user() {
+          FB.api('/me', function(response) {
+            $.getJSON($SCRIPT_ROOT + '/_get_facebook_login', 
+                      { facebook_id: response.id, name: response.name },
+                      function(data) {
+                        console.log(data);
+                        location.reload(true);
+                      });
+          });
+      }
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : 'facebook app id', // App ID
+          channelUrl : 'http://path/to/channel', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true  // parse XFBML
+        });
+
+        // Additional init code here
+        {% if user %}
+         FB.getLoginStatus(function(response) {
+           if (response.status === 'connected') {
+             //user logged in and connected to facebook
+             console.log('user logged in and connected to facebook')
+           } else if (response.status === 'not_authorized') {
+             //user logged in but app not_authorized on facebook
+             console.log('user logged in but app not_authorized on facebook')
+             $("#user_no_facebook_auth_modal").reveal();
+           } else {
+             //user logged in but app not_logged_in to facebook
+             console.log('user logged in but app not_logged_in to facebook')
+             $("#user_no_facebook_login_modal").reveal();
+           }
+          });
+        };
+        {% else %}
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            // connected
+            console.log('connected')
+            $("#no_user_facebook_modal").reveal()
+            get_user()
+          } else if (response.status === 'not_authorized') {
+            // not_authorized
+            console.log('not authorized')
+            $("#login_modal").reveal();
+          } else {
+            // not_logged_in
+            console.log('not logged in')
+            $("#login_modal").reveal();
+          }
+         });
+       };      
+      {% endif %}
+      // Load the SDK Asynchronously
+      (function(d){
+         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement('script'); js.id = id; js.async = true;
+         js.src = "//connect.facebook.net/en_US/all.js";
+         ref.parentNode.insertBefore(js, ref);
+       }(document));
+    </script>
+{% endblock %}
