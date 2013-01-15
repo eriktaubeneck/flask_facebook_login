@@ -55,8 +55,7 @@
   <div id="login_modal" class="reveal-modal">
     <h2> Welcome to creeper! </h2>
     <p>
-      It's never been better to be a fan, but sometimes we could all use a little help navigating 
-      the realm of fandom. At creeper, we're here to help!
+      Creeper requires you to login through your Facebook account.
     </p>
       <a href="#" id="facebook_login" class="button"> Get started. Login with Facebook. </a>
     </p>
@@ -65,8 +64,7 @@
   <div id="user_no_facebook_auth_modal" class="reveal-modal">
     <h2> Whoops! </h2>
     <p>
-      It seems that creeper isn't authorized on your Facebook account anymore. We only listen 
-      to your account for relevant fan activity and would never post on your behalf.
+      It seems that creeper isn't authorized on your Facebook account anymore.
     </p>
       <a href="#" id="facebook_login" class="button"> Reconnect to Facebook. </a>
     </p>
@@ -147,8 +145,7 @@
              console.log('user logged in but app not_logged_in to facebook')
              $("#user_no_facebook_login_modal").reveal();
            }
-          });
-        };
+          }); 
         {% else %}
         FB.getLoginStatus(function(response) {
           if (response.status === 'connected') {
@@ -165,8 +162,7 @@
             console.log('not logged in')
             $("#login_modal").reveal();
           }
-         });
-       };      
+         });      
       {% endif %}
       // Load the SDK Asynchronously
       (function(d){

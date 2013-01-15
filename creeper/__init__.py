@@ -1,7 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request, jsonify, session
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy.sql.expression import func
-import sys
 
 app = Flask(__name__)
 
