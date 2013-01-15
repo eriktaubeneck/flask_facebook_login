@@ -1,6 +1,8 @@
 Using the Facebook Javascript SDK and jQuery to Create User Accounts with a Flask App
 =====================================================================================
 
+Before we get started, the full code is available on [GitHub](https://github.com/eriktaubeneck/flask_facebook_login).
+
 Getting Started with [developers.facebook.com](https://developers.facebook.com/)
 --------------------------------------------------------------------------------
 
@@ -308,8 +310,7 @@ and our `FB.getLoginStatus()` call will look like:
        });      
     {% endif %}
 
-
-
+And that's about it. The full code is available on [GitHub](https://github.com/eriktaubeneck/flask_facebook_login), so fork me!
 
 
 
